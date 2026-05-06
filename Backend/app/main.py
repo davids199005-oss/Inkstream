@@ -21,6 +21,7 @@ async def lifespan(_app: FastAPI):
 app: FastAPI = FastAPI(
     title="Inkstream",
     description="Inkstream is a ChatGPT style chat platform.",
+    lifespan=lifespan,
 )
 
 

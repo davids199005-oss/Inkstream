@@ -7,12 +7,10 @@ from .config import config
 
 logger: Logger = logging.getLogger(name=__name__)
 
-client: AsyncMongoClient[dict[str, object]] | None = None
-database: AsyncDatabase[dict[str, object]] | None = None
 
 async def connect_to_database() -> None:
     global client, database
-    client = AsyncMongoClient[dict[str, object]](uri=config.mongo_uri)
+    client = AsyncMongoClient[dict[str, object]](config.mongo_uri)
 
     database = client.get_database(name=config.mongo_db_name)
 
