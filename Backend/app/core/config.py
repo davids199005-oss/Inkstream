@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from dataclasses import dataclass
 
-load_dotenv()
+_ = load_dotenv()
 
 @dataclass(frozen=True)
 class Config:
