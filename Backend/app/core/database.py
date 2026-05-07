@@ -6,7 +6,8 @@ from .config import config
 
 
 logger: Logger = logging.getLogger(name=__name__)
-
+client: AsyncMongoClient[dict[str, object]] | None = None
+database: AsyncDatabase[dict[str, object]] | None = None
 
 async def connect_to_database() -> None:
     global client, database
