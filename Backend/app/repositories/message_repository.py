@@ -1,11 +1,13 @@
-from pymongo.asynchronous.cursor import AsyncCursor
-from pymongo.results import InsertOneResult
-from pymongo.asynchronous.collection import AsyncCollection
 from datetime import datetime, timezone
-from bson import ObjectId, objectid
-from Backend.app.core.database import get_database
-from Backend.app.models import Message, Role
 from typing import cast
+
+from bson import ObjectId
+from pymongo.asynchronous.collection import AsyncCollection
+from pymongo.asynchronous.cursor import AsyncCursor
+from pymongo.results import DeleteResult, InsertOneResult
+
+from app.core.database import get_database
+from app.models import Message, Role
 
 
 class MessageRepository:
@@ -21,7 +23,7 @@ class MessageRepository:
 
         now: datetime = datetime.now(tz=timezone.utc)
         document: dict[str, object] = {
-            "conversation_id": objectid.ObjectId(oid=conversation_id),
+            "conversation_id": ObjectId(oid=conversation_id),
             "role": role,
             "content": content,
             "created_at": now,
@@ -43,9 +45,9 @@ class MessageRepository:
         ).get_collection(name=self.COLLECTION_NAME)
         cursor: AsyncCursor[dict[str, object]] = collection.find(
             filter={
-                "conversation_id": ObjectId(oid=conversation_id)
+                "conversation_id": ObjectId(conversation_id)
             }
-        ).sort(key_or_list="created_ad", direction=1)
+        ).sort(key_or_list="created_at", direction=1)
 
         messages: list[Message] = []
         async for document in cursor:
@@ -58,3 +60,12 @@ class MessageRepository:
                     created_at=cast(datetime, document["created_at"]),
                 ))
         return messages
+
+    async def delete_by_conversation(self, conversation_id: str) -> int:
+
+        collection: AsyncCollection[dict[str, object]] = get_database(
+        ).get_collection(name=self.COLLECTION_NAME)
+        result: DeleteResult = await collection.delete_many(
+            filter={"conversation_id": ObjectId(conversation_id)}
+        )
+        return result.deleted_count

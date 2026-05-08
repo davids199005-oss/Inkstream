@@ -1,8 +1,8 @@
 from datetime import datetime
-from typing import Literal
+from typing import Literal, TypeAlias
 from pydantic import BaseModel, Field
 
-Role = Literal["user", "assistant"]
+Role: TypeAlias = Literal["user", "assistant"]
 
 class MessageCreate(BaseModel):
     content: str = Field(min_length=1, max_length=10000)

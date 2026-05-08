@@ -22,7 +22,7 @@ def _required(name: str) -> str:
     if not value:
         raise RuntimeError(
             f"Missing required environment variable: {name}."
-            " Please check your .env file and try again."
+           + " Please check your .env file and try again."
         )
     return value
 
