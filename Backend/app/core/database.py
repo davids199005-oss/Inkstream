@@ -11,18 +11,18 @@ database: AsyncDatabase[dict[str, object]] | None = None
 
 async def connect_to_database() -> None:
     global client, database
-    client = AsyncMongoClient[dict[str, object]](config.mongo_db_uri, tz_aware=True)
+    client = AsyncMongoClient[dict[str, object]](host=config.mongo_db_uri, tz_aware=True)
 
     database = client.get_database(name=config.mongo_db_name)
 
     _ = await client.admin.command("ping")
-    logger.info("Connected to MongoDB: %s", config.mongo_db_name)
+    logger.info(msg=f"Connected to MongoDB: {config.mongo_db_name}")
 
 async def close_database_connection() -> None:
     global client, database
     if client is not None:
         await client.close()
-        logger.info("Disconnected from MongoDB")
+        logger.info(msg="Disconnected from MongoDB")
     client = None
     database = None
 
