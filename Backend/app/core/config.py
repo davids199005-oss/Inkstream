@@ -11,7 +11,7 @@ class Config:
     openai_model: str
 
     # Database
-    mongo_uri: str
+    mongo_db_uri: str
     mongo_db_name: str
 
     # CORS
@@ -30,7 +30,7 @@ def get_config() -> Config:
     return Config(
         openai_api_key=_required(name="OPENAI_API_KEY"),
         openai_model=_required(name="OPENAI_MODEL"),
-        mongo_uri=_required(name="MONGO_DB_URI"),
+        mongo_db_uri=_required(name="MONGO_DB_URI"),
         mongo_db_name=_required(name="MONGO_DB_NAME"),
         cors_origins=_required(name="CORS_ORIGINS"),
     )
