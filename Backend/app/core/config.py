@@ -14,6 +14,9 @@ class Config:
     mongo_uri: str
     mongo_db_name: str
 
+    # CORS
+    cors_origins: str
+
 def _required(name: str) -> str:
     value: str | None = os.getenv(name)
     if not value:
@@ -29,6 +32,7 @@ def get_config() -> Config:
         openai_model=_required(name="OPENAI_MODEL"),
         mongo_uri=_required(name="MONGO_DB_URI"),
         mongo_db_name=_required(name="MONGO_DB_NAME"),
+        cors_origins=_required(name="CORS_ORIGINS"),
     )
 
 config: Config = get_config()
