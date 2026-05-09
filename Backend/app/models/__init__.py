@@ -4,7 +4,7 @@ from app.models.conversation import (
     ConversationDetail,
     ConversationSummary,
 )
-from app.models.message import Message, MessageCreate, Role
+from app.models.message import Message, MessageCreate, MessagePair, Role
 
 __all__ = [
     "Conversation",
@@ -13,5 +13,6 @@ __all__ = [
     "ConversationSummary",
     "Message",
     "MessageCreate",
+    "MessagePair",
     "Role",
 ]
