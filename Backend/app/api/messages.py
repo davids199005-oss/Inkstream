@@ -1,5 +1,4 @@
 from fastapi import APIRouter, status
-
 from app.api.conversations import ConversationId
 from app.models import Message, MessageCreate, MessagePair
 from app.services import conversation_service, message_service

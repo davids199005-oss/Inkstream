@@ -1,5 +1,4 @@
 from fastapi import APIRouter
-
 from app.api.conversations import router as conversations_router
 
 api_router: APIRouter = APIRouter(prefix="/api")
