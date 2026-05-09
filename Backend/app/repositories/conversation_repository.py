@@ -4,7 +4,6 @@ from pymongo.asynchronous.collection import AsyncCollection
 from pymongo.asynchronous.cursor import AsyncCursor
 from pymongo.results import DeleteResult, InsertOneResult, UpdateResult
 from typing import cast
-
 from app.core.database import get_database
 from app.models import Conversation
 from app.repositories.message_repository import MessageRepository
@@ -86,7 +85,7 @@ class ConversationRepository:
         )
 
     async def delete(self, conversation_id: str) -> bool:
-        
+
         _ = await self._message_repository.delete_by_conversation(
             conversation_id=conversation_id
         )
