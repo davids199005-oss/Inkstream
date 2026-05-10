@@ -6,6 +6,14 @@ class MessageService:
 
     ECHO_PREFIX: str = "Echo (Phase 1 placeholder): "
 
+    SYSTEM_PROMPT: str = (
+        "You are Inky, a helpful AI assistant."
+        " Be friendly and engaging in your responses."
+        " Use markdown formatting when appropriate."
+    )
+    TEMPERATURE: float = 0.7
+    MAX_TOKENS: int = 1000
+
     def __init__(
         self,
         message_repository: MessageRepository,
