@@ -9,14 +9,17 @@ logger: Logger = logging.getLogger(name=__name__)
 client: AsyncMongoClient[dict[str, object]] | None = None
 database: AsyncDatabase[dict[str, object]] | None = None
 
+
 async def connect_to_database() -> None:
     global client, database
-    client = AsyncMongoClient[dict[str, object]](host=config.mongo_db_uri, tz_aware=True)
+    client = AsyncMongoClient[dict[str, object]](
+        host=config.mongo_db_uri, tz_aware=True)
 
     database = client.get_database(name=config.mongo_db_name)
 
     _ = await client.admin.command("ping")
     logger.info(msg=f"Connected to MongoDB: {config.mongo_db_name}")
+
 
 async def close_database_connection() -> None:
     global client, database

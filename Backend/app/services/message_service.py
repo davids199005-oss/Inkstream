@@ -3,7 +3,6 @@ from app.repositories import ConversationRepository, MessageRepository
 
 
 class MessageService:
-    
 
     ECHO_PREFIX: str = "Echo (Phase 1 placeholder): "
 
@@ -20,7 +19,7 @@ class MessageService:
         conversation_id: str,
         content: str,
     ) -> tuple[Message, Message]:
-        
+
         user_message: Message = await self._message_repository.create(
             conversation_id=conversation_id,
             role="user",

@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 _ = load_dotenv()
 
+
 @dataclass(frozen=True)
 class Config:
     # OpenAI API
@@ -17,14 +18,16 @@ class Config:
     # CORS
     cors_origins: str
 
+
 def _required(name: str) -> str:
     value: str | None = os.getenv(name)
     if not value:
         raise RuntimeError(
             f"Missing required environment variable: {name}."
-           + " Please check your .env file and try again."
+            + " Please check your .env file and try again."
         )
     return value
+
 
 def get_config() -> Config:
     return Config(
@@ -34,5 +37,6 @@ def get_config() -> Config:
         mongo_db_name=_required(name="MONGO_DB_NAME"),
         cors_origins=_required(name="CORS_ORIGINS"),
     )
+
 
 config: Config = get_config()
