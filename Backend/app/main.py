@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 from app.api import api_router
 from app.core.database import close_database_connection, connect_to_database
 from app.core.exceptions import ConversationNotFoundError
+from app.core.openai_client import close_openai_client, connect_openai_client
 
 
 logging.basicConfig(
@@ -17,7 +18,9 @@ logging.basicConfig(
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
     await connect_to_database()
+    await connect_openai_client()
     yield
+    await close_openai_client()
     await close_database_connection()
 
 
