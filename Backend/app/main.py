@@ -5,7 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from app.api import api_router
 from app.core.database import close_database_connection, connect_to_database
-from app.core.exceptions import ConversationNotFoundError
+from app.core.exceptions import ConversationNotFoundError, OpenAIConnectionError
 from app.core.openai_client import close_openai_client, connect_openai_client
 
 
@@ -40,7 +40,15 @@ async def handle_conversation_not_found(
         status_code=404,
         content={"detail": str(exc)},
     )
-
+@app.exception_handler(exc_class_or_status_code=OpenAIConnectionError)
+async def handle_openai_connection_error(
+    _request: Request,
+    exc: OpenAIConnectionError,
+) -> JSONResponse:
+    return JSONResponse(
+        status_code=503,
+        content={"detail": str(exc)},
+    )
 
 app.include_router(router=api_router)
 
