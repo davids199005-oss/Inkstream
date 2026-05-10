@@ -1,10 +1,20 @@
+import logging
+from logging import Logger
+from typing import cast
+from openai import AsyncOpenAI, OpenAIError
+from openai.types.chat import ChatCompletionMessageParam
+from openai.types.chat.chat_completion import ChatCompletion
+from app.core.config import config
+from app.core.exceptions import OpenAIConnectionError
+from app.core.openai_client import get_openai_client
 from app.models import Message
 from app.repositories import ConversationRepository, MessageRepository
 
 
-class MessageService:
+logger: Logger = logging.getLogger(name=__name__)
 
-    ECHO_PREFIX: str = "Echo (Phase 1 placeholder): "
+
+class MessageService:
 
     SYSTEM_PROMPT: str = (
         "You are Inky, a helpful AI assistant."
@@ -34,9 +44,16 @@ class MessageService:
             content=content,
         )
 
-        assistant_content: str = self._generate_assistant_reply(
-            user_content=content
+        history: list[Message] = await self._message_repository.list_by_conversation(
+            conversation_id=conversation_id
         )
+
+        try:
+            assistant_content: str = await self._generate_assistant_reply(history=history)
+        except OpenAIError as e:
+            logger.error(msg=f"OpenAI request failed: {e}")
+            raise OpenAIConnectionError(reason="upstream LLM error") from e
+
         assistant_message: Message = await self._message_repository.create(
             conversation_id=conversation_id,
             role="assistant",
@@ -54,5 +71,23 @@ class MessageService:
             conversation_id=conversation_id
         )
 
-    def _generate_assistant_reply(self, user_content: str) -> str:
-        return f"{self.ECHO_PREFIX}{user_content}"
+    async def _generate_assistant_reply(self, history: list[Message]) -> str:
+        client: AsyncOpenAI = get_openai_client()
+
+        messages: list[ChatCompletionMessageParam] = [
+            {"role": "system", "content": self.SYSTEM_PROMPT},
+        ]
+        for msg in history:
+            messages.append(cast(ChatCompletionMessageParam, {"role": msg.role, "content": msg.content}))
+
+        completion: ChatCompletion = await client.chat.completions.create(
+            model=config.openai_model,
+            messages=messages,
+            temperature=self.TEMPERATURE,
+            max_tokens=self.MAX_TOKENS,
+        )
+
+        content: str | None = completion.choices[0].message.content
+        if content is None:
+            raise OpenAIConnectionError(reason="empty response from LLM")
+        return content
