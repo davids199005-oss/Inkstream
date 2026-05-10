@@ -1,4 +1,3 @@
-from app.core.openai_client import get_openai_client
 from app.repositories import conversation_repository, message_repository
 from app.services.conversation_service import ConversationService
 from app.services.message_service import MessageService
@@ -9,7 +8,6 @@ conversation_service: ConversationService = ConversationService(
 message_service: MessageService = MessageService(
     message_repository=message_repository,
     conversation_repository=conversation_repository,
-    openai_client=get_openai_client(),
 )
 
 __all__ = [

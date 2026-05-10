@@ -1,4 +1,3 @@
-from openai import AsyncOpenAI
 from app.models import Message
 from app.repositories import ConversationRepository, MessageRepository
 
@@ -19,11 +18,9 @@ class MessageService:
         self,
         message_repository: MessageRepository,
         conversation_repository: ConversationRepository,
-        openai_client: AsyncOpenAI,
     ) -> None:
         self._message_repository: MessageRepository = message_repository
         self._conversation_repository: ConversationRepository = conversation_repository
-        self._openai_client: AsyncOpenAI = openai_client
 
     async def add_message(
         self,
