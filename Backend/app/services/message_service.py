@@ -118,7 +118,7 @@ class MessageService:
 
         messages: list[ChatCompletionMessageParam] = [
             {"role": "system", "content": self.TITLE_SYSTEM_PROMPT},
-            {"role": "user", "content": f"Conversation: {conversation_text}"},
+            {"role": "user", "content": conversation_text},
         ]
 
         completion: ChatCompletion = await client.chat.completions.create(
