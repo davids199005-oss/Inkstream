@@ -54,13 +54,10 @@ class MessageService:
         self._message_repository: MessageRepository = message_repository
         self._conversation_repository: ConversationRepository = conversation_repository
 
-    
-
     async def list_messages(self, conversation_id: str) -> list[Message]:
         return await self._message_repository.list_by_conversation(
             conversation_id=conversation_id
         )
-
 
     async def _generate_title(self, history: list[Message]) -> str:
         client: AsyncOpenAI = get_openai_client()
@@ -115,7 +112,6 @@ class MessageService:
                 )
             )
 
-        
         try:
             client: AsyncOpenAI = get_openai_client()
             async with client.chat.completions.stream(
