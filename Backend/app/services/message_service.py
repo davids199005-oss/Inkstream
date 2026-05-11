@@ -12,6 +12,7 @@ from app.core.exceptions import OpenAIConnectionError
 from app.core.openai_client import get_openai_client
 from app.models import Message
 from app.repositories import ConversationRepository, MessageRepository
+from app.models.openai_pompt import openai_prompt
 
 
 logger: Logger = logging.getLogger(name=__name__)
@@ -19,32 +20,7 @@ logger: Logger = logging.getLogger(name=__name__)
 
 class MessageService:
 
-    SYSTEM_PROMPT: str = (
-        "You are Inky, a helpful AI assistant."
-        " Be friendly and engaging in your responses."
-        " Use markdown formatting when appropriate."
-    )
-    TEMPERATURE: float = 0.7
-    MAX_TOKENS: int = 1000
-
-    TITLE_SYSTEM_PROMPT: str = (
-        "You are a title generator for a chat application."
-        " Given a conversation, generate a concise title in 3-5 words"
-        " capturing the main topic.\n\n"
-        "Rules:\n"
-        "- 3-5 words maximum\n"
-        "- Title Case\n"
-        "- No quotes, no trailing punctuation\n"
-        "- English only\n\n"
-        "Example:\n"
-        "Conversation:\n"
-        "User: How do I filter a pandas DataFrame by multiple conditions?\n"
-        "Assistant: You can use boolean indexing with & and | operators...\n\n"
-        "Title: Pandas DataFrame Filtering Conditions\n\n"
-        "Now generate a title for the following conversation:"
-    )
-    TITLE_TEMPERATURE: float = 0.3
-    TITLE_MAX_TOKENS: int = 50
+   
 
     def __init__(
         self,
@@ -65,15 +41,15 @@ class MessageService:
             f"{msg.role.capitalize()}: {msg.content}" for msg in history)
 
         messages: list[ChatCompletionMessageParam] = [
-            {"role": "system", "content": self.TITLE_SYSTEM_PROMPT},
+            {"role": "system", "content": openai_prompt.TITLE_SYSTEM_PROMPT},
             {"role": "user", "content": conversation_text},
         ]
 
         completion: ChatCompletion = await client.chat.completions.create(
             model=config.openai_model,
             messages=messages,
-            temperature=self.TITLE_TEMPERATURE,
-            max_completion_tokens=self.TITLE_MAX_TOKENS,
+            temperature=openai_prompt.TITLE_TEMPERATURE,
+            max_completion_tokens=openai_prompt.TITLE_MAX_TOKENS,
         )
 
         title: str | None = completion.choices[0].message.content
@@ -102,7 +78,7 @@ class MessageService:
         )
 
         messages: list[ChatCompletionMessageParam] = [
-            {"role": "system", "content": self.SYSTEM_PROMPT},
+            {"role": "system", "content": openai_prompt.SYSTEM_PROMPT},
         ]
         for msg in history:
             messages.append(
@@ -117,8 +93,8 @@ class MessageService:
             async with client.chat.completions.stream(
                 model=config.openai_model,
                 messages=messages,
-                temperature=self.TEMPERATURE,
-                max_completion_tokens=self.MAX_TOKENS,
+                temperature=openai_prompt.TEMPERATURE,
+                max_completion_tokens=openai_prompt.MAX_TOKENS,
             ) as stream:
                 async for event in stream:
                     if event.type == "content.delta":
