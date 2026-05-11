@@ -111,3 +111,26 @@ class MessageService:
         if content is None:
             raise OpenAIConnectionError(reason="empty response from LLM")
         return content
+    
+
+    async def _generate_title(self, history: list[Message]) -> str:
+        client: AsyncOpenAI = get_openai_client()
+        convesation_text: str = "\n".join(
+            f"{msg.role.capitalize()}: {msg.content}" for msg in history)
+
+        messages: list[ChatCompletionMessageParam] = [
+            {"role": "system", "content": self.TITLE_SYSTEM_PROMPT},
+            {"role": "user", "content": f"Conversation: {convesation_text}"},
+        ]
+
+        completion: ChatCompletion = await client.chat.completions.create(
+            model=config.openai_model,
+            messages=messages,
+            temperature=self.TITLE_TEMPERATURE,
+            max_tokens=self.TITLE_MAX_TOKENS,
+        )
+
+        title: str | None = completion.choices[0].message.content
+        if title is None:
+            raise OpenAIConnectionError(reason="empty response from LLM")
+        return title.strip()
