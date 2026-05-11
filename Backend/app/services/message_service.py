@@ -10,9 +10,9 @@ from openai.types.chat.chat_completion import ChatCompletion
 from app.core.config import config
 from app.core.exceptions import OpenAIConnectionError
 from app.core.openai_client import get_openai_client
+from app.core.openai_prompt import openai_prompt
 from app.models import Message
 from app.repositories import ConversationRepository, MessageRepository
-from app.models.openai_pompt import openai_prompt
 
 
 logger: Logger = logging.getLogger(name=__name__)
