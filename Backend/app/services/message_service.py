@@ -54,66 +54,13 @@ class MessageService:
         self._message_repository: MessageRepository = message_repository
         self._conversation_repository: ConversationRepository = conversation_repository
 
-    async def add_message(
-        self,
-        conversation_id: str,
-        content: str,
-    ) -> tuple[Message, Message]:
-
-        user_message: Message = await self._message_repository.create(
-            conversation_id=conversation_id,
-            role="user",
-            content=content,
-        )
-
-        history: list[Message] = await self._message_repository.list_by_conversation(
-            conversation_id=conversation_id
-        )
-
-        try:
-            assistant_content: str = await self._generate_assistant_reply(history=history)
-        except OpenAIError as e:
-            logger.error(msg=f"OpenAI request failed: {e}")
-            raise OpenAIConnectionError(reason="upstream LLM error") from e
-
-        assistant_message: Message = await self._message_repository.create(
-            conversation_id=conversation_id,
-            role="assistant",
-            content=assistant_content,
-        )
-
-        await self._conversation_repository.touch_updated(
-            conversation_id=conversation_id
-        )
-
-        return user_message, assistant_message
+    
 
     async def list_messages(self, conversation_id: str) -> list[Message]:
         return await self._message_repository.list_by_conversation(
             conversation_id=conversation_id
         )
 
-    async def _generate_assistant_reply(self, history: list[Message]) -> str:
-        client: AsyncOpenAI = get_openai_client()
-
-        messages: list[ChatCompletionMessageParam] = [
-            {"role": "system", "content": self.SYSTEM_PROMPT},
-        ]
-        for msg in history:
-            messages.append(cast(ChatCompletionMessageParam, {
-                            "role": msg.role, "content": msg.content}))
-
-        completion: ChatCompletion = await client.chat.completions.create(
-            model=config.openai_model,
-            messages=messages,
-            temperature=self.TEMPERATURE,
-            max_tokens=self.MAX_TOKENS,
-        )
-
-        content: str | None = completion.choices[0].message.content
-        if content is None:
-            raise OpenAIConnectionError(reason="empty response from LLM")
-        return content
 
     async def _generate_title(self, history: list[Message]) -> str:
         client: AsyncOpenAI = get_openai_client()
@@ -190,14 +137,12 @@ class MessageService:
             if assistant_content is None:
                 raise OpenAIConnectionError(reason="empty response from LLM")
 
-            # Step 6: Save assistant message
             assistant_message: Message = await self._message_repository.create(
                 conversation_id=conversation_id,
                 role="assistant",
                 content=assistant_content,
             )
 
-            # Step 7: Generate title on first turn only (history+assistant_message == 2)
             new_title: str | None = None
             if len(history) == 1:
                 try:
@@ -212,13 +157,11 @@ class MessageService:
                     logger.error(msg=f"Title generation failed: {title_error}")
                     new_title = None
 
-            # Step 8: Touch conversation updated_at (skipped if title was set above)
             if new_title is None:
                 await self._conversation_repository.touch_updated(
                     conversation_id=conversation_id
                 )
 
-            # Step 9: Final done event with assistant message id and optional title
             yield ServerSentEvent(
                 event="done",
                 data={
