@@ -62,10 +62,16 @@
       "name": "Send message",
       "request": {
         "method": "POST",
-        "header": [],
+        "header": [
+          {
+            "key": "Accept",
+            "value": "text/event-stream",
+            "type": "text"
+          }
+        ],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"content\": \"What's my name and what did I just ask you?\"\r\n}",
+          "raw": "{\r\n    \"content\": \"Hi! What is FastAPI in two sentences?\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -159,10 +165,6 @@
       "request": {
         "method": "DELETE",
         "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n  \"content\": \"\"\r\n}"
-        },
         "url": {
           "raw": "{{base_url}}/api/conversations/{{conversation_id}}",
           "host": [
