@@ -108,4 +108,4 @@ class ConversationRepository:
             filter={"_id": ObjectId(conversation_id)},
             update={"$set": {"title": title, "updated_at": now}},
         )
-        return result.modified_count == 1
+        return result.matched_count == 1
