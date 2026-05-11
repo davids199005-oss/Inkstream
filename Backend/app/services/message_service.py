@@ -1,6 +1,9 @@
 import logging
+from collections.abc import AsyncIterator
 from logging import Logger
+from openai.types.chat.parsed_chat_completion import ParsedChatCompletion
 from typing import cast
+from fastapi.sse import ServerSentEvent
 from openai import AsyncOpenAI, OpenAIError
 from openai.types.chat import ChatCompletionMessageParam
 from openai.types.chat.chat_completion import ChatCompletion
@@ -97,7 +100,8 @@ class MessageService:
             {"role": "system", "content": self.SYSTEM_PROMPT},
         ]
         for msg in history:
-            messages.append(cast(ChatCompletionMessageParam, {"role": msg.role, "content": msg.content}))
+            messages.append(cast(ChatCompletionMessageParam, {
+                            "role": msg.role, "content": msg.content}))
 
         completion: ChatCompletion = await client.chat.completions.create(
             model=config.openai_model,
@@ -110,7 +114,7 @@ class MessageService:
         if content is None:
             raise OpenAIConnectionError(reason="empty response from LLM")
         return content
-    
+
     async def _generate_title(self, history: list[Message]) -> str:
         client: AsyncOpenAI = get_openai_client()
         conversation_text: str = "\n".join(
@@ -132,3 +136,100 @@ class MessageService:
         if title is None:
             raise OpenAIConnectionError(reason="empty response from LLM")
         return title.strip()
+
+    async def add_message_stream(
+        self,
+        conversation_id: str,
+        content: str,
+    ) -> AsyncIterator[ServerSentEvent]:
+        user_message: Message = await self._message_repository.create(
+            conversation_id=conversation_id,
+            role="user",
+            content=content,
+        )
+
+        yield ServerSentEvent(
+            event="user_message_saved",
+            data=user_message,
+        )
+
+        history: list[Message] = await self._message_repository.list_by_conversation(
+            conversation_id=conversation_id
+        )
+
+        messages: list[ChatCompletionMessageParam] = [
+            {"role": "system", "content": self.SYSTEM_PROMPT},
+        ]
+        for msg in history:
+            messages.append(
+                cast(
+                    ChatCompletionMessageParam,
+                    {"role": msg.role, "content": msg.content},
+                )
+            )
+
+        
+        try:
+            client: AsyncOpenAI = get_openai_client()
+            async with client.chat.completions.stream(
+                model=config.openai_model,
+                messages=messages,
+                temperature=self.TEMPERATURE,
+                max_tokens=self.MAX_TOKENS,
+            ) as stream:
+                async for event in stream:
+                    if event.type == "content.delta":
+                        yield ServerSentEvent(
+                            event="token",
+                            data={"text": event.delta},
+                        )
+
+                completion: ParsedChatCompletion[None] = await stream.get_final_completion()
+
+            assistant_content: str | None = completion.choices[0].message.content
+            if assistant_content is None:
+                raise OpenAIConnectionError(reason="empty response from LLM")
+
+            # Step 6: Save assistant message
+            assistant_message: Message = await self._message_repository.create(
+                conversation_id=conversation_id,
+                role="assistant",
+                content=assistant_content,
+            )
+
+            # Step 7: Generate title on first turn only (history+assistant_message == 2)
+            new_title: str | None = None
+            if len(history) == 1:
+                try:
+                    new_title = await self._generate_title(
+                        history=[*history, assistant_message]
+                    )
+                    await self._conversation_repository.update_title(
+                        conversation_id=conversation_id,
+                        title=new_title,
+                    )
+                except OpenAIError as title_error:
+                    logger.error(msg=f"Title generation failed: {title_error}")
+                    new_title = None
+
+            # Step 8: Touch conversation updated_at (skipped if title was set above)
+            if new_title is None:
+                await self._conversation_repository.touch_updated(
+                    conversation_id=conversation_id
+                )
+
+            # Step 9: Final done event with assistant message id and optional title
+            yield ServerSentEvent(
+                event="done",
+                data={
+                    "assistant_message_id": assistant_message.id,
+                    "title": new_title,
+                },
+            )
+
+        except (OpenAIError, OpenAIConnectionError) as stream_error:
+            logger.error(msg=f"OpenAI streaming failed: {stream_error}")
+            yield ServerSentEvent(
+                event="error",
+                data={"message": "Stream interrupted"},
+            )

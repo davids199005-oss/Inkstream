@@ -1,6 +1,9 @@
-from fastapi import APIRouter, status
+from collections.abc import AsyncIterable
+
+from fastapi import APIRouter
+from fastapi.sse import EventSourceResponse, ServerSentEvent
 from app.api.conversations import ConversationId
-from app.models import Message, MessageCreate, MessagePair
+from app.models import MessageCreate
 from app.services import conversation_service, message_service
 
 
@@ -12,21 +15,15 @@ router: APIRouter = APIRouter(
 
 @router.post(
     path="",
-    response_model=MessagePair,
-    status_code=status.HTTP_201_CREATED,
+    response_class=EventSourceResponse,
 )
-async def add_message(
+async def send_message(
     conversation_id: ConversationId,
     payload: MessageCreate,
-) -> MessagePair:
+) -> AsyncIterable[ServerSentEvent]:
     await conversation_service.get_conversation(conversation_id=conversation_id)
-    user_message: Message
-    assistant_message: Message
-    user_message, assistant_message = await message_service.add_message(
+    async for event in message_service.add_message_stream(
         conversation_id=conversation_id,
         content=payload.content,
-    )
-    return MessagePair(
-        user_message=user_message,
-        assistant_message=assistant_message,
-    )
+    ):
+        yield event
