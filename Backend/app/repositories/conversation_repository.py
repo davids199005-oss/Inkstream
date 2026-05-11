@@ -97,3 +97,15 @@ class ConversationRepository:
             filter={"_id": ObjectId(conversation_id)}
         )
         return result.deleted_count == 1
+
+
+    async def update_title(self, conversation_id: str, title: str) -> bool:
+        now: datetime = datetime.now(tz=timezone.utc)
+        collection: AsyncCollection[dict[str, object]] = get_database().get_collection(
+            name=self.COLLECTION_NAME
+        )
+        result: UpdateResult = await collection.update_one(
+            filter={"_id": ObjectId(conversation_id)},
+            update={"$set": {"title": title, "updated_at": now}},
+        )
+        return result.modified_count == 1
