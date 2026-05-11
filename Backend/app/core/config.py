@@ -18,6 +18,11 @@ class Config:
     # CORS
     cors_origins: str
 
+    @property
+    def cors_origins_list(self) -> list[str]:
+        """Parse comma-separated CORS_ORIGINS env value into a list of origins."""
+        return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
+
 
 def _required(name: str) -> str:
     value: str | None = os.getenv(name)

@@ -1,8 +1,9 @@
 from collections.abc import AsyncIterable
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi.sse import EventSourceResponse, ServerSentEvent
 from app.api.conversations import ConversationId
+from app.core.rate_limit import limiter
 from app.models import MessageCreate
 from app.services import conversation_service, message_service
 
@@ -17,7 +18,9 @@ router: APIRouter = APIRouter(
     path="",
     response_class=EventSourceResponse,
 )
+@limiter.limit(limit_value="10/minute")
 async def send_message(
+    request: Request,
     conversation_id: ConversationId,
     payload: MessageCreate,
 ) -> AsyncIterable[ServerSentEvent]:

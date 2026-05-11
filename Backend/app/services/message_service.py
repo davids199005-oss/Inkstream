@@ -73,7 +73,7 @@ class MessageService:
             model=config.openai_model,
             messages=messages,
             temperature=self.TITLE_TEMPERATURE,
-            max_tokens=self.TITLE_MAX_TOKENS,
+            max_completion_tokens=self.TITLE_MAX_TOKENS,
         )
 
         title: str | None = completion.choices[0].message.content
@@ -118,7 +118,7 @@ class MessageService:
                 model=config.openai_model,
                 messages=messages,
                 temperature=self.TEMPERATURE,
-                max_tokens=self.MAX_TOKENS,
+                max_completion_tokens=self.MAX_TOKENS,
             ) as stream:
                 async for event in stream:
                     if event.type == "content.delta":
