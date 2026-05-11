@@ -26,4 +26,5 @@ class OpenAIPrompt:
     TITLE_TEMPERATURE: float = 0.3
     TITLE_MAX_TOKENS: int = 50
 
+
 openai_prompt = OpenAIPrompt()

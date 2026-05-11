@@ -9,8 +9,10 @@ class ConversationNotFoundError(InkstreamError):
         self.conversation_id: str = conversation_id
         super().__init__(f"Conversation with id {conversation_id} not found.")
 
+
 class OpenAIConnectionError(InkstreamError):
     """Raised when a connection to the OpenAI API fails."""
+
     def __init__(self, reason: str) -> None:
         self.reason: str = reason
         super().__init__(f"Failed to connect to OpenAI: {reason}")

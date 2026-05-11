@@ -98,7 +98,6 @@ class ConversationRepository:
         )
         return result.deleted_count == 1
 
-
     async def update_title(self, conversation_id: str, title: str) -> bool:
         now: datetime = datetime.now(tz=timezone.utc)
         collection: AsyncCollection[dict[str, object]] = get_database().get_collection(

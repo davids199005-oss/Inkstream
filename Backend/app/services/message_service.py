@@ -20,8 +20,6 @@ logger: Logger = logging.getLogger(name=__name__)
 
 class MessageService:
 
-   
-
     def __init__(
         self,
         message_repository: MessageRepository,

@@ -14,7 +14,8 @@ async def connect_openai_client() -> None:
         api_key=config.openai_api_key,
         timeout=30.0,
     )
-    logger.info(msg=f"OpenAI client initialized (model: {config.openai_model})")
+    logger.info(
+        msg=f"OpenAI client initialized (model: {config.openai_model})")
 
 
 async def close_openai_client() -> None:
