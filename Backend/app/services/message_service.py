@@ -24,7 +24,6 @@ class MessageService:
     TEMPERATURE: float = 0.7
     MAX_TOKENS: int = 1000
 
-
     TITLE_SYSTEM_PROMPT: str = (
         "You are a title generator for a chat application."
         " Given a conversation, generate a concise title in 3-5 words"
@@ -112,15 +111,14 @@ class MessageService:
             raise OpenAIConnectionError(reason="empty response from LLM")
         return content
     
-
     async def _generate_title(self, history: list[Message]) -> str:
         client: AsyncOpenAI = get_openai_client()
-        convesation_text: str = "\n".join(
+        conversation_text: str = "\n".join(
             f"{msg.role.capitalize()}: {msg.content}" for msg in history)
 
         messages: list[ChatCompletionMessageParam] = [
             {"role": "system", "content": self.TITLE_SYSTEM_PROMPT},
-            {"role": "user", "content": f"Conversation: {convesation_text}"},
+            {"role": "user", "content": f"Conversation: {conversation_text}"},
         ]
 
         completion: ChatCompletion = await client.chat.completions.create(
