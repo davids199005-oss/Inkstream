@@ -50,7 +50,7 @@ export default function About() {
         </section>
 
         <footer className="pt-8 border-t border-[#E8E8E4]">
-          <p className="text-xs text-[#CCC] font-mono">© 2026 Inkstream</p>
+          <p className="text-xs text-[#CCCС] font-mono">© 2026 Inkstream</p>
         </footer>
       </div>
     </div>
