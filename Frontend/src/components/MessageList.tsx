@@ -1,14 +1,8 @@
 import { useEffect, useRef } from 'react'
-import type { Message } from '../types'
+import type { MessageListProps } from '../types'
 import MessageItem from './MessageItem'
 
-interface Props {
-  messages: Message[]
-  assistantDraft: string
-  isStreaming: boolean
-}
-
-export default function MessageList({ messages, assistantDraft, isStreaming }: Props) {
+export default function MessageList({ messages, assistantDraft, isStreaming }: MessageListProps) {
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {

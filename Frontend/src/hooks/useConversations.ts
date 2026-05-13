@@ -1,18 +1,7 @@
 import { useState, useCallback } from 'react'
 import { api } from '../lib/api'
 import type { Conversation } from '../types'
-
-interface UseConversationsReturn {
-  conversations: Conversation[]
-  activeId: string | null
-  loading: boolean
-  error: string | null
-  fetchAll: () => Promise<Conversation[]>
-  create: () => Promise<void>
-  remove: (id: string) => Promise<void>
-  setActive: (id: string | null) => void
-  updateTitle: (id: string, title: string) => void
-}
+import type { UseConversationsReturn } from '../types'
 
 export function useConversations(): UseConversationsReturn {
   const [conversations, setConversations] = useState<Conversation[]>([])

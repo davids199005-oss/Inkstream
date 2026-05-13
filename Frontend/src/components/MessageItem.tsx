@@ -1,14 +1,9 @@
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
+import type { MessageItemProps } from '../types'
 
-interface Props {
-  role: 'user' | 'assistant'
-  content: string
-  isStreaming?: boolean
-}
-
-export default function MessageItem({ role, content, isStreaming }: Props) {
+export default function MessageItem({ role, content, isStreaming }: MessageItemProps) {
   if (role === 'user') {
     return (
       <div className="flex justify-end px-4 py-1">

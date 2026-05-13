@@ -1,14 +1,6 @@
-import type { Conversation } from '../types'
+import type { SidebarProps } from '../types'
 
-interface Props {
-  conversations: Conversation[]
-  activeId: string | null
-  onSelect: (id: string) => void
-  onCreate: () => void
-  onDelete: (id: string) => void
-}
-
-export default function Sidebar({ conversations, activeId, onSelect, onCreate, onDelete }: Props) {
+export default function Sidebar({ conversations, activeId, onSelect, onCreate, onDelete }: SidebarProps) {
   return (
     <aside className="flex flex-col w-64 shrink-0 h-full border-r border-[#E8E8E4] bg-[#F3F3EF]">
       <div className="p-3 border-b border-[#E8E8E4]">

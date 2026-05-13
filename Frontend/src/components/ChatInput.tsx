@@ -1,12 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
+import type { ChatInputProps } from '../types'
 
-interface Props {
-  onSend: (content: string) => void
-  isStreaming: boolean
-  disabled?: boolean
-}
-
-export default function ChatInput({ onSend, isStreaming, disabled }: Props) {
+export default function ChatInput({ onSend, isStreaming, disabled }: ChatInputProps) {
   const [value, setValue] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 

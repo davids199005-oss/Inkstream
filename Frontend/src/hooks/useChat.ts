@@ -1,15 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { api } from '../lib/api'
 import type { Message } from '../types'
-
-interface UseChatReturn {
-  messages: Message[]
-  assistantDraft: string
-  isStreaming: boolean
-  error: string | null
-  sendMessage: (content: string) => Promise<void>
-  abortStream: () => void
-}
+import type { UseChatReturn } from '../types'
 
 export function useChat(
   conversationId: string | null,
