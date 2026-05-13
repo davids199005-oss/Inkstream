@@ -15,5 +15,4 @@ __all__ = [
     "MessageCreate",
     "MessagePair",
     "Role",
-    "openai_prompt",
 ]
