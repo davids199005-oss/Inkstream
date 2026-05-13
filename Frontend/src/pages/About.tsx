@@ -5,7 +5,7 @@ export default function About() {
         <h1 className="font-mono text-2xl font-semibold text-[#0A0A0A] tracking-tight mb-2">
           About Inkstream
         </h1>
-        <p className="text-[#888] text-sm font-mono mb-10">Words flowing from the model.</p>
+        <p className="text-[#888] text-sm font-mono mb-10">Inkstream - Conversational AI Assistant.</p>
 
         <section className="mb-8">
           <p className="text-sm text-[#0A0A0A] leading-relaxed">
@@ -46,7 +46,7 @@ export default function About() {
         <section className="mb-10">
           <h2 className="text-xs font-semibold text-[#888] uppercase tracking-widest mb-3">Author</h2>
           <p className="text-sm text-[#0A0A0A]">David Veryutin</p>
-          <p className="text-xs text-[#888] mt-0.5">Final project · John Bryce Full Stack & GenAI · 2026</p>
+          <p className="text-xs text-[#888] mt-0.5">Inkstream - your personal AI assistant</p>
         </section>
 
         <footer className="pt-8 border-t border-[#E8E8E4]">
