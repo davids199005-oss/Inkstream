@@ -4,6 +4,10 @@
 
 **AI chat platform** — a modern web client and OpenAI-backed API with streaming responses.
 
+<p align="center">
+  <img src="docs/Laniding.png" alt="Inkstream landing — Meet Inky, your new AI friend and partner" width="920" />
+</p>
+
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
