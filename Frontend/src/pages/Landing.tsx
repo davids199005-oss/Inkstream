@@ -1,10 +1,14 @@
 import { useNavigate } from 'react-router'
+import background from '../assets/background.jpg'
 
 export default function Landing() {
   const navigate = useNavigate()
 
   return (
-    <div className="flex flex-col min-h-dvh bg-[#FAFAF7]">
+    <div
+      className="flex flex-col min-h-dvh bg-[#FAFAF7] bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: `url(${background})` }}
+    >
       <header className="px-8 py-6">
         <span className="font-mono text-sm font-semibold text-[#0A0A0A] tracking-tight">Inkstream</span>
       </header>
@@ -13,8 +17,8 @@ export default function Landing() {
         <h1 className="font-mono text-5xl font-semibold text-[#0A0A0A] tracking-tighter mb-4">
           Inkstream
         </h1>
-        <p className="text-[#888] text-base mb-10 max-w-sm">
-          Words flowing from the model.
+        <p className="text-[#] text-base mb-10 max-w-sm">
+          Meet Inky your new AI friend and partner.
         </p>
         <button
           onClick={() => navigate('/home')}

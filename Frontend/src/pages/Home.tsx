@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useConversations } from '../hooks/useConversations'
 import { useChat } from '../hooks/useChat'
 import Sidebar from '../components/Sidebar'
@@ -8,8 +8,12 @@ import ChatInput from '../components/ChatInput'
 export default function Home() {
   const convs = useConversations()
   const chat = useChat(convs.activeId, convs.updateTitle)
+  const initRef = useRef(false)
 
   useEffect(() => {
+    if (initRef.current) return
+    initRef.current = true
+
     const init = async () => {
       const list = await convs.fetchAll()
       if (list.length === 0) {
