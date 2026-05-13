@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router'
 import Home from '../pages/Home'
 import About from '../pages/About'
 import Page404 from '../pages/Page404'
-import Landing from '../pages/landing'
+import Landing from '../pages/Landing'
 import Layout from '../components/Layout'
 
 export default function Navigation() {
