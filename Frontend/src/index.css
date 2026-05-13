@@ -1,1 +1,33 @@
 @import "tailwindcss";
+
+@theme {
+  --color-bg: #FAFAF7;
+  --color-ink: #0A0A0A;
+  --color-accent: #E85D2C;
+  --font-sans: 'Geist Variable', sans-serif;
+  --font-mono: 'Geist Mono Variable', monospace;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  background-color: #FAFAF7;
+  color: #0A0A0A;
+  font-family: 'Geist Variable', sans-serif;
+}
+
+/* Thin scrollbar for sidebar and message area */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #E8E8E4;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #CCC;
+}
