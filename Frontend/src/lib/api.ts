@@ -1,9 +1,9 @@
 import type { Conversation, ConversationDetail } from '../types/models'
 import type { StreamCallbacks } from '../types/api'
-import AppConfig from '../config/AppConfig'
+import { AppConfig } from '../config/AppConfig'
 
-async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(`${AppConfig.BASE_URL}${path}`, {
+async function request<T>(url: string, options?: RequestInit): Promise<T> {
+  const res = await fetch(url, {
     headers: { 'Content-Type': 'application/json' },
     ...options,
   })
@@ -19,16 +19,16 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
 export const api = {
   getConversations: (): Promise<Conversation[]> =>
-    request('/conversations'),
+    request(AppConfig.CONVERSATIONS_PATH),
 
   createConversation: (): Promise<Conversation> =>
-    request('/conversations', { method: 'POST', body: JSON.stringify({}) }),
+    request(AppConfig.CONVERSATIONS_PATH, { method: 'POST', body: JSON.stringify({}) }),
 
   getConversation: (id: string): Promise<ConversationDetail> =>
-    request(`/conversations/${id}`),
+    request(AppConfig.CONVERSATION_PATH.replace(':id', id)),
 
   deleteConversation: (id: string): Promise<void> =>
-    request(`/conversations/${id}`, { method: 'DELETE' }),
+    request(AppConfig.CONVERSATION_PATH.replace(':id', id), { method: 'DELETE' }),
 
   streamMessage: async (
     conversationId: string,
@@ -36,7 +36,8 @@ export const api = {
     callbacks: StreamCallbacks,
     signal?: AbortSignal
   ): Promise<void> => {
-    const res = await fetch(`${AppConfig.BASE_URL}/conversations/${conversationId}/messages`, {
+    const url = AppConfig.MESSAGES_PATH.replace(':id', conversationId)
+    const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ content }),
