@@ -1,0 +1,12 @@
+[{
+  "_id": {
+    "$oid": "6a04ef53e8cd295d1e605260"
+  },
+  "title": "Introduction To AI Assistant",
+  "created_at": {
+    "$date": "2026-05-13T21:38:27.115Z"
+  },
+  "updated_at": {
+    "$date": "2026-05-13T21:40:57.371Z"
+  }
+}]
