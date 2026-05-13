@@ -1,4 +1,4 @@
-import type { SidebarProps } from '../types'
+import type { SidebarProps } from '../types/components'
 
 export default function Sidebar({ conversations, activeId, onSelect, onCreate, onDelete }: SidebarProps) {
   return (

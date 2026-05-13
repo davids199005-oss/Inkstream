@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import type { ChatInputProps } from '../types'
+import type { ChatInputProps } from '../types/components'
 
 export default function ChatInput({ onSend, isStreaming, disabled }: ChatInputProps) {
   const [value, setValue] = useState('')

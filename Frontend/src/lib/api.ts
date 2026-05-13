@@ -1,5 +1,5 @@
-import type { Conversation, ConversationDetail } from '../types'
-import type { StreamCallbacks } from '../types'
+import type { Conversation, ConversationDetail } from '../types/models'
+import type { StreamCallbacks } from '../types/api'
 import AppConfig from '../config/AppConfig'
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {

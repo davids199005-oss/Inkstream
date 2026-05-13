@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import { api } from '../lib/api'
-import type { Conversation } from '../types'
-import type { UseConversationsReturn } from '../types'
+import type { Conversation } from '../types/models'
+import type { UseConversationsReturn } from '../types/hooks'
 
 export function useConversations(): UseConversationsReturn {
   const [conversations, setConversations] = useState<Conversation[]>([])

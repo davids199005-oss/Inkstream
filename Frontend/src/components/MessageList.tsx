@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import type { MessageListProps } from '../types'
+import type { MessageListProps } from '../types/components'
 import MessageItem from './MessageItem'
 
 export default function MessageList({ messages, assistantDraft, isStreaming }: MessageListProps) {

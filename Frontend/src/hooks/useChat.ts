@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { api } from '../lib/api'
-import type { Message } from '../types'
-import type { UseChatReturn } from '../types'
+import type { Message } from '../types/models'
+import type { UseChatReturn } from '../types/hooks'
 
 export function useChat(
   conversationId: string | null,

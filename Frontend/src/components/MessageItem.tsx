@@ -1,7 +1,7 @@
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
-import type { MessageItemProps } from '../types'
+import type { MessageItemProps } from '../types/components'
 
 export default function MessageItem({ role, content, isStreaming }: MessageItemProps) {
   if (role === 'user') {
